@@ -1,0 +1,26 @@
+FROM postgres:14
+
+ARG PG_VERSION=14
+ARG PG_VERSION
+ARG AGE_VERSION=1.5.0
+ARG AGE_RC=rc0
+ARG PG_VECTO_RS=0.4.0
+ENV AGE_VERSION=$AGE_VERSION
+ENV AGE_RC=$AGE_RC
+ENV PG_VERSION=$PG_VERSION
+ENV PG_VECTO_RS=$PG_VECTO_RS
+
+RUN apt update
+RUN apt install -y build-essential libreadline-dev zlib1g-dev flex bison wget postgresql-server-dev-${PG_VERSION}
+
+RUN wget https://github.com/apache/age/releases/download/PG${PG_VERSION}%2Fv${AGE_VERSION}-${AGE_RC}/apache-age-${AGE_VERSION}-src.tar.gz
+RUN tar -xvf apache-age-${AGE_VERSION}-src.tar.gz
+RUN cd apache-age-${AGE_VERSION} && make install
+RUN rm -rf apache-age-${AGE_VERSION} apache-age-${AGE_VERSION}-src.tar.gz
+RUN wget https://github.com/tensorchord/pgvecto.rs/releases/download/v${PG_VECTO_RS}/vectors-pg${PG_VERSION}_${PG_VECTO_RS}_amd64.deb
+RUN dpkg -i vectors-pg${PG_VERSION}_${PG_VECTO_RS}_amd64.deb
+RUN rm vectors-pg${PG_VERSION}_${PG_VECTO_RS}_amd64.deb
+RUN echo "shared_preload_libraries = 'age, vectors.so'" >> /usr/share/postgresql/postgresql.conf.sample
+RUN echo "search_path = 'public, vectors'" >> /usr/share/postgresql/postgresql.conf.sample
+
+COPY postgres-initdb.sh /docker-entrypoint-initdb.d/postgres-initdb.sh
