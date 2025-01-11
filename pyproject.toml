@@ -27,12 +27,16 @@ numexpr = "^2.10.2"
 langchainhub = "^0.1.21"
 sentencepiece = "^0.2.0"
 jinja2 = "^3.1.4"
-bitsandbytes = "^0.45.0"
+bitsandbytes = "0.42.0"
 accelerate = "^1.2.1"
 json-repair = "^0.31.0"
 langchain-openai = "^0.2.14"
 langchain-postgres = "^0.0.12"
 faiss-cpu = "^1.9.0.post1"
+pyvis = "^0.3.2"
+pandas = "^2.2.3"
+matplotlib = "^3.10.0"
+seaborn = "^0.13.2"
 
 
 [tool.poetry.group.dev.dependencies]
